@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  liberchat:
+    build:
+      context: .
+      args:
+        - BRANCH=${BRANCH:-Liberchat6.1.16}
+    container_name: liberchat-autonome
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - ALLOWED_DOMAINS=${ALLOWED_DOMAINS}
+      - PORT=3000
+    restart: unless-stopped
+    # ---------------------------------------------
+    # Pour la plupart des utilisateurs :
+    # Lancez simplement la commande ci-dessous :
+    # ALLOWED_DOMAINS="https://votre-domaine.com" docker-compose up --build -d
+    # ---------------------------------------------
+    # Pour les développeurs (optionnel) :
+    # Si vous voulez tester vos modifications de code en direct :
+    # 1. Décommentez les 2 lignes ci-dessous :
+    #    volumes:
+    #      - ../:/app
+    # 2. Lancez avec :
+    #    NODE_ENV=development docker-compose up --build
+    # (Vous pouvez ignorer cette partie si vous ne faites que déployer)
+    # ---------------------------------------------
+    # Pour choisir une branche ou un tag spécifique :
+    # (optionnel, à utiliser seulement si vous voulez une version précise)
+    # Exemple :
+    # BRANCH=dev docker-compose up --build -d
+    # (Sinon, laissez vide pour utiliser la version par défaut)
+    # ---------------------------------------------
+    # Pour accéder au conteneur depuis d'autres appareils du réseau local,
+    # assurez-vous que le port 3000 est bien exposé (déjà le cas ci-dessus)
+    # et que votre pare-feu autorise les connexions entrantes sur ce port.
+    #
+    # Pour autoriser l'accès réseau local en production, ajoutez http://<IP>:3000
+    # dans la variable ALLOWED_DOMAINS lors du lancement ou via le script.
