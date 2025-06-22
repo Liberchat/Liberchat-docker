@@ -27,21 +27,20 @@ while true; do
 done
 
 # Domaine autorisé
+IP=$(hostname -I | awk '{print $1}')
 if [ $MODE_DEV -eq 1 ]; then
-  IP=$(hostname -I | awk '{print $1}')
-  ALLOWED_DOMAINS="http://localhost:3000,http://$IP:3000"
+  ALLOWED_DOMAINS="https://localhost:3000,https://$IP:3000"
   echo "Le domaine autorisé par défaut pour le développement local est : $ALLOWED_DOMAINS"
 else
-  IP=$(hostname -I | awk '{print $1}')
   read -p "Entrez le(s) domaine(s) autorisé(s) (ex: https://votre-domaine.com) : " ALLOWED_DOMAINS
   # Avertissement si l'utilisateur met https sur une IP locale
   if [[ $ALLOWED_DOMAINS =~ https://$IP ]]; then
-    echo -e "\e[1;33m⚠️  Attention : L'accès direct en HTTPS sur une IP locale n'est pas supporté par défaut. Utilisez http://$IP:3000 ou mettez un reverse proxy HTTPS devant.\e[0m"
+    echo -e "\e[1;33m⚠️  Attention : L'accès direct en HTTPS sur une IP locale nécessite un certificat valide ou auto-signé.\e[0m"
   fi
-  read -p "Voulez-vous aussi autoriser l'accès réseau local (http://$IP:3000) ? [o/N] : " addlocal
+  read -p "Voulez-vous aussi autoriser l'accès réseau local (https://$IP:3000) ? [o/N] : " addlocal
   if [[ $addlocal =~ ^[oO]$ ]]; then
-    ALLOWED_DOMAINS="$ALLOWED_DOMAINS,http://$IP:3000"
-    echo "Ajout de http://$IP:3000 aux domaines autorisés."
+    ALLOWED_DOMAINS="$ALLOWED_DOMAINS,https://$IP:3000"
+    echo "Ajout de https://$IP:3000 aux domaines autorisés."
   fi
 fi
 
@@ -78,18 +77,16 @@ eval $RUN_CMD
 
 # Affichage de l'adresse d'accès
 if [ $MODE_DEV -eq 1 ]; then
-  IP=$(hostname -I | awk '{print $1}')
   echo -e "\nLiberchat est lancé en mode développement !"
-  echo -e "Utilisez \e[1;32mhttp://localhost:3000\e[0m ou \e[1;32mhttp://$IP:3000\e[0m depuis un autre appareil du réseau local."
-  echo -e "\e[1;33m⚠️  N'utilisez pas https:// en local, sauf si vous avez configuré un reverse proxy HTTPS.\e[0m"
+  echo -e "Utilisez \e[1;32mhttps://localhost:3000\e[0m ou \e[1;32mhttps://$IP:3000\e[0m depuis un autre appareil du réseau local."
+  echo -e "\e[1;33m⚠️  Si le navigateur affiche un avertissement, acceptez le certificat auto-signé.\e[0m"
   echo "\n⚠️  Si vous n'arrivez pas à accéder depuis un autre appareil, vérifiez que le port 3000 est ouvert dans le pare-feu de votre machine."
   echo "  Exemple pour ouvrir le port sur Linux (ufw) : sudo ufw allow 3000/tcp"
 else
-  IP=$(hostname -I | awk '{print $1}')
   echo -e "\nLiberchat est lancé en mode production !"
   echo "Accédez à l'application sur : $ALLOWED_DOMAINS"
-  echo "Ou, depuis le réseau local : http://$IP:3000 (si autorisé dans ALLOWED_DOMAINS)"
-  echo -e "\e[1;33m⚠️  N'utilisez pas https:// sur l'IP locale sans reverse proxy HTTPS.\e[0m"
+  echo "Ou, depuis le réseau local : https://$IP:3000 (si autorisé dans ALLOWED_DOMAINS)"
+  echo -e "\e[1;33m⚠️  N'utilisez pas https:// sur l'IP locale sans certificat valide ou auto-signé.\e[0m"
   echo "\n⚠️  Si vous n'arrivez pas à accéder depuis un autre appareil, vérifiez que le port 3000 est ouvert dans le pare-feu de votre machine."
   echo "  Exemple pour ouvrir le port sur Linux (ufw) : sudo ufw allow 3000/tcp"
 fi
@@ -98,3 +95,4 @@ if [ $MODE_DEV -eq 1 ]; then
 else
   echo "(Mode production : conteneur en arrière-plan, arrêtez avec 'docker-compose down')"
 fi
+
