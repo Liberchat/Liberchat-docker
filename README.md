@@ -89,7 +89,31 @@ docker-compose up --build -d
 ## Documentation
 
 - [Documentation complète sur GitHub](https://github.com/Liberchat/Liberchat)
-- [Exemple de configuration avancée](https://github.com/Liberchat/Liberchat/blob/Liberchat6.1.16/docker/docker-compose.yml)
+- Exemple de configuration avancée :
+
+```yaml
+version: '3.8'
+
+services:
+  liberchat:
+    image: liberchat/liberchat:6.1.16
+    container_name: liberchat
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - ALLOWED_DOMAINS=https://votre-domaine.com, http://192.168.x.x:3000
+      - BRANCH=Liberchat6.1.16
+      # - NODE_ENV=production # Décommentez pour forcer le mode production
+    # volumes:
+    #   - ./src:/app # Décommentez pour le développement local (hot reload)
+    # networks:
+    #   - liberchat-net
+
+# networks:
+#   liberchat-net:
+#     driver: bridge
+```
 
 ---
 

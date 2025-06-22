@@ -1,4 +1,5 @@
-# Dockerfile autonome pour Liberchat (téléchargement auto depuis GitHub, branche ou tag au choix)
+# Dockerfile monolithique pour Liberchat (Node.js + Vite/React)
+# Le backend Node.js sert automatiquement le frontend Vite/React compilé (dossier dist/)
 FROM node:20-alpine as build
 WORKDIR /app
 
@@ -11,13 +12,16 @@ RUN apk add --no-cache wget tar \
   && tar -xzf liberchat.tar.gz --strip-components=1 \
   && rm liberchat.tar.gz
 
-RUN npm install --production && npm run build
+RUN npm install && npm run build # Build du frontend (dist/) et backend
 
 FROM node:20-alpine as prod
 WORKDIR /app
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/package*.json ./
-RUN npm install --production && npm cache clean --force;
+COPY --from=build /app .
+# Frontend ET backend accessibles sur ce port
 EXPOSE 3000
 ENV NODE_ENV=production
-CMD ["node", "dist/server.js"]
+CMD ["node", "server.js"]
+
+# Variante avancée :
+# Pour servir le frontend via Nginx, builder le front puis copier dist/ dans une image nginx
+# Voir docker-compose.example.yml pour un exemple de séparation front/back
