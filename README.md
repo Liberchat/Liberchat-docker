@@ -1,3 +1,4 @@
+En dev , actuellement le projet n'est pas encore fonctionnel !
 <!-- Logo Liberchat -->
 <p align="center">
   <img src="https://github.com/Liberchat/Liberchat/blob/Liberchat6.1.16/icon.png?raw=true" alt="Liberchat Logo" width="120" />
