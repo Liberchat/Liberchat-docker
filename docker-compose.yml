@@ -13,6 +13,11 @@ services:
       - ALLOWED_DOMAINS=${ALLOWED_DOMAINS}
       - PORT=3000
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.liberchat.rule=Host(`ton-domaine.com`)"
+      - "traefik.http.routers.liberchat.entrypoints=websecure"
+      - "traefik.http.routers.liberchat.tls.certresolver=le"
     # ---------------------------------------------
     # Pour la plupart des utilisateurs :
     # Lancez simplement la commande ci-dessous :
@@ -39,3 +44,32 @@ services:
     #
     # Pour autoriser l'accès réseau local en production, ajoutez http://<IP>:3000
     # dans la variable ALLOWED_DOMAINS lors du lancement ou via le script.
+  nginx:
+    build:
+      context: ./nginx
+    container_name: liberchat-nginx
+    depends_on:
+      - liberchat
+    ports:
+      - "443:443"
+      - "80:80"
+    restart: unless-stopped
+  traefik:
+    image: traefik:v2.11
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.le.acme.tlschallenge=true"
+      - "--certificatesresolvers.le.acme.email=ton.email@domaine.com"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "8080:8080"
+      - "4443:443"
+      - "8081:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+    restart: unless-stopped
