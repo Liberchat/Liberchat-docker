@@ -16,6 +16,48 @@
 
 Ce dossier permet de déployer Liberchat sans avoir besoin du code source local : tout est téléchargé automatiquement depuis GitHub lors du build.
 
+## Utilisation rapide (build distant depuis GitHub)
+
+1. Placez-vous dans le dossier `docker` du projet.
+2. Lancez le script interactif :
+   ```bash
+   bash configurer.sh
+   ```
+   - Le script vous demandera le mode (développement ou production) et la branche/tag à utiliser.
+   - Le Dockerfile `docker/liberchat/Dockerfile` télécharge le code, installe les dépendances et build l’application.
+   - Nginx reverse proxy gère le HTTPS (auto-signé en dev, Let's Encrypt en prod).
+
+3. Accédez à l’application :
+   - En local : https://localhost
+   - Depuis le réseau : https://<IP_de_votre_machine>
+   - Acceptez le certificat auto-signé si le navigateur affiche un avertissement.
+
+4. Limitations en HTTPS auto-signé :
+   - Les Service Workers (PWA, notifications, etc.) ne fonctionnent qu’en HTTPS avec un certificat valide ou sur `localhost`.
+   - Sur une IP locale, il faut un vrai certificat pour lever toutes les restrictions navigateur.
+
+---
+
+## Structure des Dockerfiles
+
+- `docker/liberchat/Dockerfile` : build distant (télécharge le code depuis GitHub, usage prod/CI)
+- `docker/nginx/Dockerfile` : Nginx reverse proxy avec HTTPS (auto-signé ou Let's Encrypt)
+
+---
+
+## Conseils
+
+- Pour la production, configurez un vrai domaine et ouvrez les ports 80/443.
+- Pour le développement, privilégiez `localhost` pour tester les fonctionnalités avancées (PWA, etc.).
+
+---
+
+Pour toute question ou contribution, ouvrez une issue ou consultez la documentation principale du projet.
+
+---
+
+# (Ancienne documentation ci-dessous)
+
 ## Utilisation ultra-simple (débutant)
 
 1. Clonez ce dépôt Docker officiel (recommandé) :
