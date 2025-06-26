@@ -211,4 +211,4 @@ docker run -d \
 Pour le développement local (hot reload), voir la section "Utilisation rapide (manuel)" ci-dessus.
 
 Pour plus d'exemples, consultez le dépôt officiel : https://github.com/Liberchat/Liberchat-docker
-- [HTTPS ERROR SSL doc voir ](https://github.com/Liberchat/Liberchat-macOS) 🍏
+- [HTTPS ERROR SSL doc voir ](https://github.com/Liberchat/Liberchat-docker/blob/Liberchat2.5/README-HTTPS-NGINX.md) ⚠️
