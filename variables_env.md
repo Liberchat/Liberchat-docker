@@ -51,5 +51,11 @@
 ALLOWED_DOMAINS=https://monsite.fr,http://krzndhtu4puxi3h57s4dqgrzyf3ox5fd6ujcpt64qqyzzam7suzjngad.onion,http://localhost:5173
 PORT=3000
 NODE_ENV=production
-VITE_SOCKET_TARGET=http://krzndhtu4puxi3h57s4dqgrzyf3ox5fd6ujcpt64qqyzzam7suzjngad.onion
+  GNU nano 7.2                                             .env *                                                     
+ALLOWED_DOMAINS=http://krzndhtu4puxi3h57s4dqgrzyf3ox5fd6ujcpt64qqyzzam7suzjngad.onion
+PORT=3000
+NODE_ENV=production
+VITE_SOCKET_TARGET=ws://krzndhtu4puxi3h57s4dqgrzyf3ox5fd6ujcpt64qqyzzam7suzjngad.onion
+# URL de base pour les assets en production (utilisée par Vite)
+VITE_BASE_URL=http://krzndhtu4puxi3h57s4dqgrzyf3ox5fd6ujcpt64qqyzzam7suzjngad.onion 
 ```
