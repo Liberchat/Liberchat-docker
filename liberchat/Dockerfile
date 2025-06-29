@@ -2,7 +2,7 @@
 FROM node:20-alpine as build
 WORKDIR /app
 
-ARG BRANCH=Liberchat6.1.20
+ARG BRANCH=Liberchat6.1.21
 ENV BRANCH=${BRANCH}
 
 # Forcer le build Vite à générer des URLs absolues en http (pas https)
