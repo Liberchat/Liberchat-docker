@@ -67,13 +67,13 @@ docker compose down
 - **Ce setup est uniquement pour les tests locaux**
 - **Pour la production, utilisez le dépôt principal Liberchat ou Yunohost**
 - Ouvrez le port 3000 dans votre pare-feu si besoin : `sudo ufw allow 3000/tcp`
-- Version par défaut : `Liberchat6.1.20`
+- Version par défaut : `latest`
 
 ## Variables d'environnement
 
 - **ALLOWED_DOMAINS** : Domaines autorisés (HTTP uniquement pour les tests)
-- **BRANCH** : Branche/tag à utiliser (défaut: Liberchat6.1.20)
+- **BRANCH** : Branche/tag à utiliser (défaut: latest)
 - **PORT** : Port d'écoute (défaut: 3000)
 
 Pour toute question, consultez le dépôt principal: https://github.com/Liberchat/Liberchat
-Pour la production avec Yunohost: https://github.com/Liberchat/liberchatserver_ynh
+Pour la production avec Yunohost: https://github.com/YunoHost-Apps/liberchat_ynh

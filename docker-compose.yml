@@ -1,6 +1,6 @@
 services:
   liberchat:
-    image: liberchat/liberchat:6.1.20
+    image: liberchat/liberchat:latest
     container_name: liberchat-simple
     ports:
       - "3000:3000"
