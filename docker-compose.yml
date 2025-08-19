@@ -1,6 +1,8 @@
 services:
   liberchat:
     image: liberchat/liberchat:latest
+    # Pour utiliser votre propre image :
+    # image: VOTRE_USERNAME/liberchat-docker:latest
     container_name: liberchat-simple
     ports:
       - "3000:3000"
