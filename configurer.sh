@@ -44,9 +44,17 @@ else
   COMPOSE_CMD="docker compose"
 fi
 
-# Lancement direct avec l'image officielle
+# Création du fichier .env si nécessaire
+if [ ! -f ".env" ]; then
+  echo "BRANCH=${BRANCH:-main}" > .env
+  echo "ALLOWED_DOMAINS=$ALLOWED_DOMAINS" >> .env
+  echo "NODE_ENV=development" >> .env
+  echo "PORT=3000" >> .env
+fi
+
+# Lancement avec Docker Compose 3.5
 echo -e "\nLancement de l'application..."
-RUN_CMD="ALLOWED_DOMAINS=\"$ALLOWED_DOMAINS\" $COMPOSE_CMD up --remove-orphans"
+RUN_CMD="$COMPOSE_CMD up --build --remove-orphans"
 
 # Affichage des informations d'accès AVANT le lancement
 echo -e "\n\e[1;32m✅ Liberchat sera accessible sur :\e[0m"

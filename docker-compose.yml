@@ -1,13 +1,29 @@
+version: '3.5'
+
 services:
   liberchat:
-    image: liberchat/liberchat:latest
-    # Pour utiliser votre propre image :
-    # image: VOTRE_USERNAME/liberchat-docker:latest
+    build:
+      context: ./liberchat
+      args:
+        - BRANCH=${BRANCH:-main}
     container_name: liberchat-simple
     ports:
       - "3000:3000"
     environment:
-      - ALLOWED_DOMAINS=http://localhost:3000
-      - NODE_ENV=development
+      - ALLOWED_DOMAINS=${ALLOWED_DOMAINS:-http://localhost:3000}
+      - NODE_ENV=${NODE_ENV:-development}
       - PORT=3000
+    volumes:
+      - liberchat_data:/app/data
+      - liberchat_logs:/app/logs
     restart: unless-stopped
+    networks:
+      - liberchat_network
+
+volumes:
+  liberchat_data:
+  liberchat_logs:
+
+networks:
+  liberchat_network:
+    driver: bridge
