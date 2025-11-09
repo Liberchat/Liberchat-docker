@@ -2,30 +2,49 @@
 FROM node:20-alpine as build
 WORKDIR /app
 
-ARG BRANCH=Liberchat6.1.21
+ARG BRANCH=main
 ENV BRANCH=${BRANCH}
 
-# Forcer le build Vite à générer des URLs absolues en http (pas https)
-ARG VITE_BASE_URL=/
-ENV VITE_BASE_URL=${VITE_BASE_URL}
+# Configuration pour désactiver YunoHost et utiliser en local
+ENV VITE_BASE_URL=/
+ENV NODE_ENV=production
+ENV YNH_APP_ARG_PATH=""
+ENV IS_YUNOHOST=false
 
-# Télécharger la branche ou le tag souhaité du projet Liberchat
-RUN apk add --no-cache wget tar \
+# Télécharger la branche ou le tag souhaité du projet Liberchat YunoHost
+RUN apk add --no-cache wget tar git \
   && wget -O liberchat.tar.gz https://github.com/Liberchat/liberchatserver_ynh/archive/refs/heads/${BRANCH}.tar.gz || wget -O liberchat.tar.gz https://github.com/Liberchat/liberchatserver_ynh/archive/refs/tags/${BRANCH}.tar.gz \
   && tar -xzf liberchat.tar.gz --strip-components=1 \
   && rm liberchat.tar.gz \
-  && echo "if ('serviceWorker' in navigator) {\n  window.addEventListener('load', function() {\n    navigator.serviceWorker.register('/service-worker.js');\n  });\n}" | sed 's/\\n/\n/g' > /app/register-sw.js
+  && echo 'import { defineConfig } from "vite"; \
+import react from "@vitejs/plugin-react"; \
+export default defineConfig({ \
+  plugins: [react()], \
+  base: "/", \
+  build: { \
+    outDir: "dist", \
+    assetsDir: "assets" \
+  } \
+});' > vite.config.ts
 
-RUN npm install && VITE_BASE_URL=$VITE_BASE_URL npm run build
+# Installation des dépendances et build avec configuration locale
+RUN npm ci --only=production \
+  && VITE_BASE_URL=/ BASE_PATH="" YNH_APP_ARG_PATH="" npm run build
 
 FROM node:20-alpine as prod
 WORKDIR /app
-COPY --from=build /app .
-EXPOSE 3000
-ENV NODE_ENV=production
-CMD ["node", "server.js"]
 
-RUN mkdir -p /app/letsencrypt \
-    && touch /app/letsencrypt/acme.json \
-    && chmod 600 /app/letsencrypt/acme.json \
-    && echo "self.addEventListener('install', event => {\n  self.skipWaiting();\n});\nself.addEventListener('activate', event => {\n  event.waitUntil(self.clients.claim());\n});\nself.addEventListener('fetch', event => {\n  // Par défaut, laisse passer toutes les requêtes\n});" > /app/service-worker.js
+# Copier tout depuis l'étape de build
+COPY --from=build /app .
+
+# Variables d'environnement pour mode local (pas YunoHost)
+ENV NODE_ENV=development
+ENV PORT=3000
+ENV YNH_APP_ARG_PATH=""
+ENV IS_YUNOHOST=false
+ENV BASE_PATH=""
+
+EXPOSE 3000
+
+# Utiliser le serveur original du projet
+CMD ["npm", "start"]
