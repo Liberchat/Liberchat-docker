@@ -1,0 +1,13 @@
+services:
+  liberchat:
+    image: liberchat/liberchat:latest
+    # Pour utiliser votre propre image :
+    # image: VOTRE_USERNAME/liberchat-docker:latest
+    container_name: liberchat-simple
+    ports:
+      - "3000:3000"
+    environment:
+      - ALLOWED_DOMAINS=http://localhost:3000
+      - NODE_ENV=development
+      - PORT=3000
+    restart: unless-stopped
